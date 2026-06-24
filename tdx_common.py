@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""Common helpers for pytdx-based reference data sync jobs."""
+
+from __future__ import annotations
+
+import logging
+from contextlib import contextmanager
+from dataclasses import dataclass
+
+from pytdx.hq import TdxHq_API
+from pytdx.params import TDXParams
+
+from kline_common import latest_trade_date, load_symbols
+
+HOST_CANDIDATES: list[tuple[str, int, str]] = [
+    ("180.153.18.170", 7709, "上海电信主站Z1"),
+    ("180.153.18.171", 7709, "上海电信主站Z2"),
+    ("202.108.253.130", 7709, "北京联通主站Z1"),
+    ("202.108.253.131", 7709, "北京联通主站Z2"),
+    ("123.125.108.14", 7709, "上证云北京联通一"),
+]
+
+
+@dataclass(frozen=True)
+class TdxSymbol:
+    symbol: str
+    market: int
+    code: str
+    name: str
+
+
+def symbol_to_tdx_parts(symbol: str) -> tuple[int, str] | None:
+    normalized = symbol.strip().lower()
+    if normalized.startswith("sh."):
+        return (TDXParams.MARKET_SH, normalized[3:])
+    if normalized.startswith("sz."):
+        return (TDXParams.MARKET_SZ, normalized[3:])
+    return None
+
+
+def code_to_symbol_guess(code: str) -> str | None:
+    normalized = str(code).strip()
+    if len(normalized) != 6 or not normalized.isdigit():
+        return None
+    if normalized.startswith(("6", "9")):
+        return f"sh.{normalized}"
+    if normalized.startswith(("0", "1", "2", "3")):
+        return f"sz.{normalized}"
+    return None
+
+
+def load_tdx_stock_universe(logger: logging.Logger) -> list[TdxSymbol]:
+    as_of_date = latest_trade_date().isoformat()
+    symbols = load_symbols(logger, as_of_date=as_of_date, include_indices=False)
+    result: list[TdxSymbol] = []
+    seen: set[str] = set()
+    for item in symbols:
+        parts = symbol_to_tdx_parts(item.db_symbol)
+        if not parts:
+            continue
+        market, code = parts
+        if item.db_symbol in seen:
+            continue
+        seen.add(item.db_symbol)
+        result.append(TdxSymbol(item.db_symbol, market, code, item.name))
+    result.sort(key=lambda item: item.symbol)
+    return result
+
+
+@contextmanager
+def connect_hq_api(logger: logging.Logger, *, heartbeat: bool = True, timeout: int = 5):
+    last_error: Exception | None = None
+    for ip, port, alias in HOST_CANDIDATES:
+        api = TdxHq_API(heartbeat=heartbeat)
+        try:
+            ok = api.connect(ip, port, time_out=timeout)
+        except Exception as exc:  # noqa: BLE001
+            last_error = exc
+            logger.warning("⚠ 连接 pytdx 主机失败 %s (%s:%s): %s", alias, ip, port, exc)
+            try:
+                api.disconnect()
+            except Exception:
+                pass
+            continue
+
+        if not ok:
+            try:
+                api.disconnect()
+            except Exception:
+                pass
+            continue
+
+        logger.info("✅ 已连接 pytdx 主机 %s (%s:%s)", alias, ip, port)
+        try:
+            yield api
+        finally:
+            try:
+                api.disconnect()
+            except Exception:
+                pass
+        return
+
+    if last_error is not None:
+        raise RuntimeError(f"无法连接任何 pytdx 行情主机: {last_error}")
+    raise RuntimeError("无法连接任何 pytdx 行情主机")

@@ -1,0 +1,16 @@
+# Edit PROJECT_DIR to your checkout path before installing with crontab.
+PROJECT_DIR=/path/to/daily_stock_data
+
+0 18 * * 1-5 /usr/bin/flock -n /tmp/daily-stock-data-daily.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_daily_sync_batches.sh >> ./logs/cron_daily_kline.log 2>&1'
+30 20 * * 1-5 /usr/bin/flock -n /tmp/daily-stock-data-min5.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_5min_sync_batches.sh >> ./logs/cron_min5_kline.log 2>&1'
+14 9 * * 1-5 /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tencent_snapshots.sh >> ./logs/cron_tencent.log 2>&1'
+5 6 * * * /usr/bin/flock -n /tmp/daily-stock-data-tushare-stock-basic.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tushare_stock_basic_sync.sh >> ./logs/cron_tushare_stock_basic.log 2>&1'
+10 23 * * * /usr/bin/flock -n /tmp/daily-stock-data-tdx-xdxr.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_xdxr_sync.sh >> ./logs/cron_tdx_xdxr.log 2>&1'
+25 23 * * * /usr/bin/flock -n /tmp/daily-stock-data-tdx-finance.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_finance_sync.sh >> ./logs/cron_tdx_finance.log 2>&1'
+40 23 * * * /usr/bin/flock -n /tmp/daily-stock-data-tdx-blocks.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_blocks_sync.sh >> ./logs/cron_tdx_blocks.log 2>&1'
+30 11 * * 1-5 /usr/bin/flock -n /tmp/daily-stock-data-tdx-ticks-am.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_tick_trades_am.sh >> ./logs/cron_tdx_tick_trades_am.log 2>&1'
+30 15 * * 1-5 /usr/bin/flock -n /tmp/daily-stock-data-tdx-ticks-pm.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_tick_trades_pm.sh >> ./logs/cron_tdx_tick_trades_pm.log 2>&1'
+30 0 * * * /usr/bin/flock -n /tmp/daily-stock-data-tdx-f10-daily.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_f10_daily_sync.sh >> ./logs/cron_tdx_f10_daily.log 2>&1'
+30 1 * * 0 /usr/bin/flock -n /tmp/daily-stock-data-tdx-f10-weekly.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_f10_weekly_sync.sh >> ./logs/cron_tdx_f10_weekly.log 2>&1'
+30 2 * * 0 /bin/bash -lc '[ $(((( $(date +\%s) / 86400 / 7 )) & 1)) -eq 0 ] && cd "$PROJECT_DIR" && /usr/bin/flock -n /tmp/daily-stock-data-tdx-f10-biweekly.lock ./run_tdx_f10_biweekly_sync.sh >> ./logs/cron_tdx_f10_biweekly.log 2>&1'
+30 3 * * * /usr/bin/flock -n /tmp/daily-stock-data-tdx-f10-export.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./run_tdx_f10_export.sh >> ./logs/cron_tdx_f10_export.log 2>&1'

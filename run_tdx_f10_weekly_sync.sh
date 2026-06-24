@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${SCRIPT_DIR}"
+
+if [ -f ./.env ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . ./.env
+  set +a
+fi
+
+mkdir -p logs
+
+PYTHON_BIN="${PYTHON_BIN:-python3}"
+LOG_FILE="./logs/tdx_f10_weekly.log"
+TIMEOUT_SECONDS="${TDX_F10_WEEKLY_TIMEOUT:-14400}"
+WORKERS="${TDX_F10_WEEKLY_WORKERS:-4}"
+CHUNK_SIZE="${TDX_F10_WEEKLY_CHUNK_SIZE:-100}"
+
+echo "$(date '+%F %T %z') [INFO] pytdx f10 weekly sync start workers=${WORKERS} chunk_size=${CHUNK_SIZE}" | tee -a "${LOG_FILE}"
+
+if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" sync_tdx_f10_sections.py --group weekly --workers "${WORKERS}" --chunk-size "${CHUNK_SIZE}" >> "${LOG_FILE}" 2>&1; then
+  echo "$(date '+%F %T %z') [INFO] pytdx f10 weekly sync done" | tee -a "${LOG_FILE}"
+else
+  rc=$?
+  echo "$(date '+%F %T %z') [WARNING] pytdx f10 weekly sync exit_code=${rc}" | tee -a "${LOG_FILE}"
+  exit "${rc}"
+fi

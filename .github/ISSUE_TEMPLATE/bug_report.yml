@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a reproducible problem with a collector or storage backend.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: dropdown
+    id: storage
+    attributes:
+      label: Storage backend
+      options:
+        - csv
+        - postgres
+        - both
+        - not sure
+    validations:
+      required: true
+  - type: input
+    id: script
+    attributes:
+      label: Script or wrapper
+      placeholder: get_new_daily.py / run_daily_sync_batches.sh
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Paste the command you ran. Remove tokens and passwords.
+      render: bash
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste the smallest useful log excerpt. Remove tokens and private hostnames.
+      render: text
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, dependency versions, and whether this is cron or manual execution.

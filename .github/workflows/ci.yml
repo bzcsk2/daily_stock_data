@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile Python sources
+        run: python -m py_compile *.py
+
+      - name: Check shell wrapper syntax
+        run: |
+          for script in run_*.sh; do
+            bash -n "$script"
+          done
+
+      - name: Check for private path leaks
+        run: |
+          ! grep -RInE '(/vol4|159951159|/home/|\.config/k-download|/miniconda|/Workflow/k-download)' \
+            --exclude-dir=.git \
+            --exclude=ci.yml \
+            .

@@ -1,7 +1,13 @@
 # daily_stock_data
 
+[![CI](https://github.com/bzcsk2/daily_stock_data/actions/workflows/ci.yml/badge.svg)](https://github.com/bzcsk2/daily_stock_data/actions/workflows/ci.yml)
+
 A-share daily data collection scripts for K-line data, Tencent snapshots,
 Tushare/TickFlow stock metadata, and pytdx reference data.
+
+Project status: early open-source release. The collectors are practical scripts
+extracted from a working personal workflow, with CSV storage added as the
+default public-friendly backend.
 
 The project supports two storage modes:
 
@@ -83,6 +89,14 @@ The `run_*.sh` wrappers:
 - read `.env` automatically
 - create `logs/` automatically
 - allow `PYTHON_BIN=/path/to/python` override
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Operations](docs/OPERATIONS.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
 
 ## Notes
 

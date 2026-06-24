@@ -1,24 +1,24 @@
-name: Feature request
-description: Suggest a new collector, backend, or operational improvement.
-title: "[Feature]: "
+name: 功能建议 / Feature request
+description: 建议新的采集源、存储后端或运维改进。
+title: "[功能]: "
 labels: ["enhancement"]
 body:
   - type: textarea
     id: problem
     attributes:
-      label: Problem
-      description: What use case should this solve?
+      label: 问题 / Problem
+      description: 这个建议想解决什么使用场景？
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
-      label: Proposal
-      description: What behavior or API would you like?
+      label: 方案 / Proposal
+      description: 你希望增加什么行为或接口？
     validations:
       required: true
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternatives considered
-      description: Any workaround or different design you considered.
+      label: 备选方案 / Alternatives considered
+      description: 你考虑过的替代方案或临时绕法。

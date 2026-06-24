@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOG_FILE="./logs/tdx_finance.log"
@@ -21,7 +23,7 @@ CHUNK_SIZE="${TDX_FINANCE_CHUNK_SIZE:-250}"
 
 echo "$(date '+%F %T %z') [INFO] pytdx finance sync start workers=${WORKERS} chunk_size=${CHUNK_SIZE}" | tee -a "${LOG_FILE}"
 
-if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" sync_tdx_finance.py --workers "${WORKERS}" --chunk-size "${CHUNK_SIZE}" >> "${LOG_FILE}" 2>&1; then
+if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" scripts/sync_tdx_finance.py --workers "${WORKERS}" --chunk-size "${CHUNK_SIZE}" >> "${LOG_FILE}" 2>&1; then
   echo "$(date '+%F %T %z') [INFO] pytdx finance sync done" | tee -a "${LOG_FILE}"
 else
   rc=$?

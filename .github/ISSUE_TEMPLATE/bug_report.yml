@@ -1,19 +1,19 @@
-name: Bug report
-description: Report a reproducible problem with a collector or storage backend.
-title: "[Bug]: "
+name: 缺陷报告 / Bug report
+description: 报告采集脚本或存储后端中可复现的问题。
+title: "[缺陷]: "
 labels: ["bug"]
 body:
   - type: textarea
     id: summary
     attributes:
-      label: Summary
-      description: What went wrong?
+      label: 问题概要 / Summary
+      description: 发生了什么问题？
     validations:
       required: true
   - type: dropdown
     id: storage
     attributes:
-      label: Storage backend
+      label: 存储后端 / Storage backend
       options:
         - csv
         - postgres
@@ -24,24 +24,24 @@ body:
   - type: input
     id: script
     attributes:
-      label: Script or wrapper
+      label: 脚本或包装器 / Script or wrapper
       placeholder: get_new_daily.py / run_daily_sync_batches.sh
     validations:
       required: true
   - type: textarea
     id: command
     attributes:
-      label: Command
-      description: Paste the command you ran. Remove tokens and passwords.
+      label: 执行命令 / Command
+      description: 粘贴你运行的命令。请移除 token 和密码。
       render: bash
   - type: textarea
     id: logs
     attributes:
-      label: Relevant logs
-      description: Paste the smallest useful log excerpt. Remove tokens and private hostnames.
+      label: 相关日志 / Relevant logs
+      description: 粘贴最小必要日志片段。请移除 token、密码和私有主机名。
       render: text
   - type: textarea
     id: environment
     attributes:
-      label: Environment
-      description: OS, Python version, dependency versions, and whether this is cron or manual execution.
+      label: 环境 / Environment
+      description: 操作系统、Python 版本、依赖版本，以及是 cron 运行还是手工运行。

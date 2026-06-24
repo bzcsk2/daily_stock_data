@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 BATCH_SIZE="${DAILY_BATCH_SIZE:-200}"
@@ -41,7 +43,7 @@ echo "$(date '+%F %T %z') [INFO] daily batches total symbols=${TOTAL} batch_size
 OFFSET=0
 while [ "${OFFSET}" -lt "${TOTAL}" ]; do
   echo "$(date '+%F %T %z') [INFO] daily batch offset=${OFFSET} limit=${BATCH_SIZE} start"
-  if timeout "${BATCH_TIMEOUT}" "${PYTHON_BIN}" get_new_daily.py \
+  if timeout "${BATCH_TIMEOUT}" "${PYTHON_BIN}" scripts/get_new_daily.py \
     --max-workers "${MAX_WORKERS}" \
     --offset "${OFFSET}" \
     --limit "${BATCH_SIZE}"; then

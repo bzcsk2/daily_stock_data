@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOG_FILE="./logs/tdx_tick_trades_am.log"
@@ -22,7 +24,7 @@ PAGE_SIZE="${TDX_TICK_AM_PAGE_SIZE:-1800}"
 
 echo "$(date '+%F %T %z') [INFO] pytdx tick am sync start workers=${WORKERS} chunk_size=${CHUNK_SIZE} page_size=${PAGE_SIZE}" | tee -a "${LOG_FILE}"
 
-if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" sync_tdx_tick_trades.py \
+if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" scripts/sync_tdx_tick_trades.py \
   --session am \
   --workers "${WORKERS}" \
   --chunk-size "${CHUNK_SIZE}" \

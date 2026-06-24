@@ -11,7 +11,7 @@ from typing import Iterable
 import pandas as pd
 
 
-PROJECT_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = Path(__file__).resolve().parent.parent
 
 
 def load_project_env(path: str | None = None) -> None:

@@ -1,36 +1,36 @@
-# Operations
+# 运维说明
 
-## Recommended Setup
+English summary: Start with CSV storage, install only the cron jobs you need, and keep generated data/logs outside Git.
 
-Start with CSV storage:
+## 推荐启动方式
+
+先使用 CSV 模式：
 
 ```bash
 cp .env.example .env
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
-./run_daily_sync_batches.sh
+./bin/run_daily_sync_batches.sh
 ```
 
-Move to PostgreSQL when you need concurrent readers, larger datasets, or SQL
-queries across collectors.
+当你需要并发查询、更大数据量或跨表 SQL 分析时，再切换到 PostgreSQL。
 
-## Cron
+## 定时任务
 
-Use `cron.example` as a template. Install only the jobs you need. Heavy jobs
-such as tick trades and F10 export can produce large output and should be
-scheduled deliberately.
+使用 `cron.example` 作为模板，只安装你需要的任务。逐笔成交和 F10 导出都可能产生较大数据量，应谨慎设置频率和保留策略。
 
-## Logs and Data
+## 日志和数据
 
-Runtime logs are written under `logs/`. CSV outputs and F10 text exports are
-written under `DATA_DIR`, defaulting to `./data`.
+- 日志：`logs/`
+- CSV 输出：`DATA_DIR`，默认 `./data`
+- F10 文本导出：默认 `DATA_DIR/finance`
 
-Both locations are ignored by Git.
+这些路径都被 `.gitignore` 排除。
 
-## Maintenance Checks
+## 维护检查
 
 ```bash
-python -m py_compile *.py
-for script in run_*.sh; do bash -n "$script"; done
+python -m py_compile scripts/*.py
+for script in bin/run_*.sh; do bash -n "$script"; done
 ```

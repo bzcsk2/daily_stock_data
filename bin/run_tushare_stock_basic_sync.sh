@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOG_FILE="./logs/tushare_stock_basic.log"
@@ -35,7 +37,7 @@ if timeout "${TIMEOUT_SECONDS}" env \
   -u http_proxy -u https_proxy -u all_proxy \
   -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY \
   NO_PROXY="*" \
-  "${PYTHON_BIN}" sync_tushare_stock_basic.py --list-status "${LIST_STATUS}" >> "${LOG_FILE}" 2>&1; then
+  "${PYTHON_BIN}" scripts/sync_tushare_stock_basic.py --list-status "${LIST_STATUS}" >> "${LOG_FILE}" 2>&1; then
   echo "$(date '+%F %T %z') [INFO] tushare stock_basic sync done" | tee -a "${LOG_FILE}"
 else
   rc=$?

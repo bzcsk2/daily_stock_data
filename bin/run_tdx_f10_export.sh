@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOG_FILE="./logs/tdx_f10_export.log"
@@ -22,7 +24,7 @@ OUTPUT_DIR="${TDX_F10_OUTPUT_DIR:-./data/finance}"
 
 echo "$(date '+%F %T %z') [INFO] pytdx f10 export start workers=${WORKERS} chunk_size=${CHUNK_SIZE} output_dir=${OUTPUT_DIR}" | tee -a "${LOG_FILE}"
 
-if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" export_tdx_f10_txts.py --workers "${WORKERS}" --chunk-size "${CHUNK_SIZE}" --output-dir "${OUTPUT_DIR}" >> "${LOG_FILE}" 2>&1; then
+if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" scripts/export_tdx_f10_txts.py --workers "${WORKERS}" --chunk-size "${CHUNK_SIZE}" --output-dir "${OUTPUT_DIR}" >> "${LOG_FILE}" 2>&1; then
   echo "$(date '+%F %T %z') [INFO] pytdx f10 export done" | tee -a "${LOG_FILE}"
 else
   rc=$?

@@ -1,23 +1,23 @@
-# Contributing
+# 贡献指南
 
-Contributions are welcome when they keep the project runnable without private
-infrastructure.
+English summary: Contributions are welcome when they keep the project runnable without private infrastructure.
 
-## Development Checks
+欢迎贡献，但请保持项目不依赖任何个人机器路径、私有数据库或私有数据文件。
 
-Run these before opening a pull request:
+## 开发检查
+
+提交 PR 前运行：
 
 ```bash
-python -m py_compile *.py
-for script in run_*.sh; do bash -n "$script"; done
+python -m py_compile scripts/*.py
+for script in bin/run_*.sh; do bash -n "$script"; done
 ```
 
-If your change touches storage behavior, test at least `STORAGE_BACKEND=csv`.
-Use `STORAGE_BACKEND=postgres` or `both` only with your own PostgreSQL instance.
+如果改动涉及存储行为，至少测试 `STORAGE_BACKEND=csv`。`STORAGE_BACKEND=postgres` 或 `both` 请只连接你自己的 PostgreSQL 实例。
 
-## Data and Secrets
+## 数据和密钥
 
-Do not commit:
+不要提交：
 
 - `.env`
 - provider tokens
@@ -25,12 +25,10 @@ Do not commit:
 - logs
 - CSV output under `data/`
 - database dumps
-- exported F10 text corpora
+- exported F10 text corpora / 完整 F10 导出正文
 
-Use `.env.example` for documenting configuration keys.
+配置项只写进 `.env.example`。
 
-## Scope
+## 范围
 
-Keep collectors, storage code, and operational wrappers decoupled from local
-machine paths. New jobs should support the same storage modes as the rest of
-the project whenever practical: `csv`, `postgres`, and `both`.
+采集脚本、存储代码和运行包装器都应避免本机绝对路径。新增任务应尽量支持统一存储模式：`csv`、`postgres`、`both`。

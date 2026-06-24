@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOG_FILE="./logs/tdx_tick_trades_backfill.log"
@@ -25,7 +27,7 @@ PROGRESS_FILE="${TDX_TICK_BACKFILL_PROGRESS_FILE:-./logs/tdx_tick_trades_backfil
 
 echo "$(date '+%F %T %z') [INFO] pytdx tick backfill start start_date=${START_DATE} end_date=${END_DATE} workers=${WORKERS} chunk_size=${CHUNK_SIZE} page_size=${PAGE_SIZE}" | tee -a "${LOG_FILE}"
 
-if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" backfill_tdx_tick_trades.py \
+if timeout "${TIMEOUT_SECONDS}" "${PYTHON_BIN}" scripts/backfill_tdx_tick_trades.py \
   --start-date "${START_DATE}" \
   --end-date "${END_DATE}" \
   --workers "${WORKERS}" \

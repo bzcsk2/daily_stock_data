@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Switch repository presentation to Chinese-first documentation while keeping English summaries.
+- Move shell wrappers into `bin/` and Python scripts/modules into `scripts/`.
+- Add a script-purpose index under `docs/SCRIPTS.md`.
 - Add project maintenance files, issue templates, pull request template, and CI.
 
 ## 2026-06-24

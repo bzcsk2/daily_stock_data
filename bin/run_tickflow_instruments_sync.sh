@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOG_FILE="./logs/tickflow_instruments.log"
@@ -31,7 +33,7 @@ fi
 
 echo "$(date '+%F %T %z') [INFO] tickflow instruments sync start batch_size=${BATCH_SIZE}" | tee -a "${LOG_FILE}"
 
-if timeout "${TIMEOUT_SECONDS}" env "${PYTHON_BIN}" sync_tickflow_instruments.py --batch-size "${BATCH_SIZE}" >> "${LOG_FILE}" 2>&1; then
+if timeout "${TIMEOUT_SECONDS}" env "${PYTHON_BIN}" scripts/sync_tickflow_instruments.py --batch-size "${BATCH_SIZE}" >> "${LOG_FILE}" 2>&1; then
   echo "$(date '+%F %T %z') [INFO] tickflow instruments sync done" | tee -a "${LOG_FILE}"
 else
   rc=$?

@@ -19,11 +19,11 @@ jobs:
           python-version: "3.11"
 
       - name: Compile Python sources
-        run: python -m py_compile *.py
+        run: python -m py_compile scripts/*.py
 
       - name: Check shell wrapper syntax
         run: |
-          for script in run_*.sh; do
+          for script in bin/run_*.sh; do
             bash -n "$script"
           done
 

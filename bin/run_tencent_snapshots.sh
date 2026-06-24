@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${SCRIPT_DIR}"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_DIR}"
 
 if [ -f ./.env ]; then
   set -a
@@ -12,6 +13,7 @@ if [ -f ./.env ]; then
 fi
 
 mkdir -p logs
+export PYTHONPATH="${PROJECT_DIR}/scripts:${PYTHONPATH:-}"
 
 PYTHON_BIN="${SNAPSHOT_PYTHON_BIN:-${PYTHON_BIN:-python3}}"
 TIMEOUT_BIN="${SNAPSHOT_TIMEOUT_BIN:-/usr/bin/timeout}"
@@ -25,7 +27,7 @@ LOCK_CONFLICT_STATUS="${SNAPSHOT_LOCK_CONFLICT_STATUS:-75}"
 # 避免像 2026-03-19 这样出现“cron 一条、手工一条”同时采集的双开问题。
 set +e
 "${FLOCK_BIN}" -n -E "${LOCK_CONFLICT_STATUS}" "${LOCK_FILE}" \
-  "${TIMEOUT_BIN}" --signal=TERM "${MAX_RUNTIME}" "${PYTHON_BIN}" download_quotes_tencent.py
+  "${TIMEOUT_BIN}" --signal=TERM "${MAX_RUNTIME}" "${PYTHON_BIN}" scripts/download_quotes_tencent.py
 status=$?
 set -e
 

@@ -6,9 +6,8 @@ from __future__ import annotations
 import datetime as dt
 
 import psycopg2
-from psycopg2 import errors
-
 from kline_common import DEFAULT_DB_CONFIG
+from psycopg2 import errors
 from storage_common import use_postgres
 
 UNIFIED_TABLE = "quote_snapshots_unified"

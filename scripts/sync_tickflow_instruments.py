@@ -7,15 +7,19 @@ import argparse
 import datetime as dt
 import json
 import os
-from typing import Iterable
+from collections.abc import Iterable
 
-import psycopg2
 import pandas as pd
+import psycopg2
 import requests
+from kline_common import (
+    DEFAULT_DB_CONFIG,
+    latest_trade_date,
+    load_symbols,
+    setup_logging,
+)
 from psycopg2.extras import Json, execute_values
-
-from kline_common import DEFAULT_DB_CONFIG, latest_trade_date, load_symbols, setup_logging
-from storage_common import read_csv_table, write_csv_table, use_csv, use_postgres
+from storage_common import read_csv_table, use_csv, use_postgres, write_csv_table
 
 LOGGER = setup_logging("./logs/tickflow_instruments.log")
 
@@ -148,7 +152,7 @@ def fetch_symbols_from_daily_ohlcv() -> list[str]:
                 """
                 SELECT DISTINCT symbol
                 FROM daily_ohlcv
-                WHERE symbol ~ '^[0-9]{6}\\.(SH|SZ)$'
+                WHERE symbol ~ '^[0-9]{6}\.(SH|SZ)$'
                 ORDER BY symbol
                 """
             )
@@ -178,7 +182,7 @@ def load_symbol_universe() -> tuple[str, list[str]]:
 
 def chunked(items: list[str], size: int) -> Iterable[list[str]]:
     for idx in range(0, len(items), size):
-        yield items[idx : idx + size]
+        yield items[idx: idx + size]
 
 
 def fetch_instruments_batch(symbols: list[str]) -> list[dict]:
@@ -320,7 +324,7 @@ def main() -> None:
     source_name, symbols = load_symbol_universe()
     LOGGER.info("🚀 开始同步 TickFlow instruments，symbol_source=%s，总数=%s", source_name, len(symbols))
 
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+    fetched_at = dt.datetime.now(dt.UTC)
     total_written = 0
     requested: set[str] = set()
     returned: set[str] = set()

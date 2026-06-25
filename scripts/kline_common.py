@@ -7,16 +7,17 @@ import datetime as dt
 import logging
 import os
 import time
+from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 
 import baostock as bs
-import psycopg2
 import baostock.common.contants as _bs_cons
-
-_bs_cons.BAOSTOCK_SERVER_IP = "public-api.baostock.com"
+import psycopg2
 
 from storage_common import read_csv_table, use_postgres
+
+_bs_cons.BAOSTOCK_SERVER_IP = "public-api.baostock.com"
 
 DEFAULT_DB_CONFIG = {
     "host": os.getenv("MARKET_DB_HOST", "localhost"),
@@ -112,7 +113,7 @@ def load_env_file(path: str) -> None:
         if not line or line.startswith("#"):
             continue
         if line.startswith("export "):
-            line = line[len("export ") :]
+            line = line[len("export "):]
         if "=" not in line:
             continue
         key, value = line.split("=", 1)
@@ -300,10 +301,8 @@ def fetch_trade_dates(start_date: str, end_date: str) -> list[dt.date]:
             except Exception as exc:
                 last_error = exc
             finally:
-                try:
+                with suppress(Exception):
                     bs.logout()
-                except Exception:
-                    pass
 
         if attempt + 1 < BAOSTOCK_RETRY_ATTEMPTS:
             time.sleep(BAOSTOCK_RETRY_BASE_SLEEP * (2**attempt))
@@ -401,10 +400,8 @@ def load_symbols(
             except Exception as exc:
                 last_error = exc
             finally:
-                try:
+                with suppress(Exception):
                     bs.logout()
-                except Exception:
-                    pass
 
         if attempt + 1 < BAOSTOCK_RETRY_ATTEMPTS:
             logger.warning("⚠ 获取股票清单失败，第%s次重试: %s", attempt + 1, last_error)

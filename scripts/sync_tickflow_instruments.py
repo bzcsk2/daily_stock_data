@@ -324,7 +324,7 @@ def main() -> None:
     source_name, symbols = load_symbol_universe()
     LOGGER.info("🚀 开始同步 TickFlow instruments，symbol_source=%s，总数=%s", source_name, len(symbols))
 
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+    fetched_at = dt.datetime.now(dt.UTC)
     total_written = 0
     requested: set[str] = set()
     returned: set[str] = set()

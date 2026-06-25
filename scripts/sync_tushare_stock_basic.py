@@ -259,7 +259,7 @@ def main() -> None:
     pro = init_tushare()
 
     LOGGER.info("🚀 开始同步 Tushare stock_basic，list_status=%s", args.list_status)
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+    fetched_at = dt.datetime.now(dt.UTC)
     df = fetch_stock_basic(pro, args.list_status)
     inserted = save_df(df, fetched_at)
     deleted = cleanup_stale_rows(args.list_status, fetched_at)

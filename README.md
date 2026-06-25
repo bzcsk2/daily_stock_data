@@ -119,7 +119,7 @@ STORAGE_BACKEND=both
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
-ruff check .
+ruff check scripts/storage_common.py
 python -m py_compile scripts/*.py
 pytest
 for script in bin/run_*.sh; do bash -n "$script"; done

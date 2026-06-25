@@ -28,7 +28,13 @@ jobs:
         run: python -m ruff check . --select E9,F63,F7,F82
 
       - name: Ruff shared module check
-        run: python -m ruff check scripts/storage_common.py scripts/tdx_common.py
+        run: >-
+          python -m ruff check
+          scripts/storage_common.py
+          scripts/tdx_common.py
+          scripts/kline_common.py
+          scripts/snapshot_unified_common.py
+          scripts/tdx_f10_common.py
 
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py

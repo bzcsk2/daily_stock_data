@@ -7,6 +7,7 @@ import argparse
 import datetime as dt
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import suppress
 
 import baostock as bs
 import pandas as pd
@@ -17,8 +18,8 @@ from kline_common import (
     DEFAULT_DB_CONFIG,
     SymbolInfo,
     fetch_trade_dates,
-    load_symbols,
     latest_trade_date,
+    load_symbols,
     setup_logging,
     split_date_ranges,
 )
@@ -343,10 +344,8 @@ def process_symbol(
                     last_error = None
                     break
                 finally:
-                    try:
+                    with suppress(Exception):
                         bs.logout()
-                    except Exception:
-                        pass
             except Exception as exc:
                 last_error = exc
                 LOGGER.warning(
@@ -357,7 +356,7 @@ def process_symbol(
                     attempt + 1,
                     exc,
                 )
-                time.sleep(2**attempt)
+                time.sleep(2 ** attempt)
         if last_error is not None:
             raise last_error
     return symbol.baostock_code, inserted

@@ -10,9 +10,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import pandas as pd
 import psycopg2
-from psycopg2.extras import Json, execute_values
-
 from kline_common import DEFAULT_DB_CONFIG, setup_logging
+from psycopg2.extras import Json, execute_values
 from storage_common import append_upsert_csv, use_csv, use_postgres
 from tdx_common import TdxSymbol, connect_hq_api, load_tdx_stock_universe
 
@@ -73,7 +72,7 @@ def ensure_schema() -> None:
 
 
 def chunked(items: list[TdxSymbol], size: int) -> list[list[TdxSymbol]]:
-    return [items[idx : idx + size] for idx in range(0, len(items), size)]
+    return [items[idx: idx + size] for idx in range(0, len(items), size)]
 
 
 def normalize_row(symbol: str, row: dict, fetched_at: dt.datetime) -> tuple | None:
@@ -128,9 +127,25 @@ def save_rows(rows: list[tuple]) -> int:
         return 0
 
     columns = [
-        "symbol", "event_date", "category", "name", "fenhong", "peigujia", "songzhuangu",
-        "peigu", "suogu", "panqianliutong", "panhouliutong", "qianzongguben",
-        "houzongguben", "fenshu", "xingquanjia", "raw_payload", "source", "fetched_at", "updated_at",
+        "symbol",
+        "event_date",
+        "category",
+        "name",
+        "fenhong",
+        "peigujia",
+        "songzhuangu",
+        "peigu",
+        "suogu",
+        "panqianliutong",
+        "panhouliutong",
+        "qianzongguben",
+        "houzongguben",
+        "fenshu",
+        "xingquanjia",
+        "raw_payload",
+        "source",
+        "fetched_at",
+        "updated_at",
     ]
     written = 0
     if use_csv():
@@ -208,16 +223,14 @@ def main() -> None:
     ensure_schema()
 
     symbols = load_tdx_stock_universe(LOGGER)
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+    fetched_at = dt.datetime.now(dt.UTC)
     total_rows = 0
     total_symbols = 0
 
     LOGGER.info("🚀 开始同步 pytdx xdxr，symbols=%s workers=%s", len(symbols), args.workers)
     batches = chunked(symbols, args.chunk_size)
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
-        futures = {
-            executor.submit(fetch_chunk, batch, fetched_at): idx for idx, batch in enumerate(batches, start=1)
-        }
+        futures = {executor.submit(fetch_chunk, batch, fetched_at): idx for idx, batch in enumerate(batches, start=1)}
         for future in as_completed(futures):
             idx = futures[future]
             rows, symbol_count = future.result()

@@ -57,6 +57,9 @@ jobs:
       - name: Ruff TDX finance collector check
         run: python -m ruff check scripts/sync_tdx_finance.py
 
+      - name: Ruff TDX blocks collector check
+        run: python -m ruff check scripts/sync_tdx_blocks.py
+
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py
 

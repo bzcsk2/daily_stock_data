@@ -24,6 +24,9 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install -r requirements-dev.txt
 
+      - name: Ruff correctness check
+        run: python -m ruff check . --select E9,F63,F7,F82
+
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py
 

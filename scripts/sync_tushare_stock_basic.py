@@ -12,15 +12,14 @@ import argparse
 import datetime as dt
 import logging
 import os
-from typing import Iterable
+from collections.abc import Iterable
 
 import pandas as pd
 import psycopg2
 import tushare as ts
-from psycopg2.extras import execute_values
-
 from kline_common import DEFAULT_DB_CONFIG, latest_trade_date, load_symbols, setup_logging
-from storage_common import write_csv_table, use_csv, use_postgres
+from psycopg2.extras import execute_values
+from storage_common import use_csv, use_postgres, write_csv_table
 
 LOGGER = setup_logging("./logs/tushare_stock_basic.log")
 

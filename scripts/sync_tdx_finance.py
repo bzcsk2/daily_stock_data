@@ -8,11 +8,10 @@ import datetime as dt
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-import psycopg2
 import pandas as pd
-from psycopg2.extras import Json, execute_values
-
+import psycopg2
 from kline_common import DEFAULT_DB_CONFIG, setup_logging
+from psycopg2.extras import Json, execute_values
 from storage_common import append_upsert_csv, use_csv, use_postgres
 from tdx_common import TdxSymbol, connect_hq_api, load_tdx_stock_universe
 
@@ -74,7 +73,7 @@ def ensure_schema() -> None:
 
 
 def chunked(items: list[TdxSymbol], size: int) -> list[list[TdxSymbol]]:
-    return [items[idx : idx + size] for idx in range(0, len(items), size)]
+    return [items[idx: idx + size] for idx in range(0, len(items), size)]
 
 
 def parse_compact_date(value) -> dt.date | None:
@@ -202,7 +201,7 @@ def main() -> None:
     ensure_schema()
 
     symbols = load_tdx_stock_universe(LOGGER)
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+    fetched_at = dt.datetime.now(dt.UTC)
     total_rows = 0
     total_symbols = 0
 

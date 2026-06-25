@@ -17,7 +17,12 @@ from collections.abc import Iterable
 import pandas as pd
 import psycopg2
 import tushare as ts
-from kline_common import DEFAULT_DB_CONFIG, latest_trade_date, load_symbols, setup_logging
+from kline_common import (
+    DEFAULT_DB_CONFIG,
+    latest_trade_date,
+    load_symbols,
+    setup_logging,
+)
 from psycopg2.extras import execute_values
 from storage_common import use_csv, use_postgres, write_csv_table
 

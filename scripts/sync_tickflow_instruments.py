@@ -12,7 +12,12 @@ from collections.abc import Iterable
 import pandas as pd
 import psycopg2
 import requests
-from kline_common import DEFAULT_DB_CONFIG, latest_trade_date, load_symbols, setup_logging
+from kline_common import (
+    DEFAULT_DB_CONFIG,
+    latest_trade_date,
+    load_symbols,
+    setup_logging,
+)
 from psycopg2.extras import Json, execute_values
 from storage_common import read_csv_table, use_csv, use_postgres, write_csv_table
 

@@ -119,16 +119,7 @@ STORAGE_BACKEND=both
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
-ruff check . --select E9,F63,F7,F82
-ruff check scripts/storage_common.py scripts/tdx_common.py scripts/kline_common.py scripts/snapshot_unified_common.py scripts/tdx_f10_common.py
-ruff check scripts/get_new_daily.py scripts/get_new_5min.py
-ruff check scripts/sync_tushare_stock_basic.py scripts/sync_tickflow_instruments.py
-ruff check scripts/download_quotes_tencent.py
-ruff check scripts/sync_tdx_xdxr.py
-ruff check scripts/sync_tdx_finance.py
-ruff check scripts/sync_tdx_blocks.py
-ruff check scripts/sync_tdx_tick_trades.py scripts/export_tdx_f10_txts.py
-ruff check scripts/sync_tdx_f10_sections.py
+ruff check scripts
 python -m py_compile scripts/*.py
 pytest
 for script in bin/run_*.sh; do bash -n "$script"; done

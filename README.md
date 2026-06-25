@@ -128,6 +128,7 @@ ruff check scripts/sync_tdx_xdxr.py
 ruff check scripts/sync_tdx_finance.py
 ruff check scripts/sync_tdx_blocks.py
 ruff check scripts/sync_tdx_tick_trades.py scripts/export_tdx_f10_txts.py
+ruff check scripts/sync_tdx_f10_sections.py
 python -m py_compile scripts/*.py
 pytest
 for script in bin/run_*.sh; do bash -n "$script"; done

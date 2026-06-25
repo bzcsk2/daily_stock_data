@@ -51,6 +51,9 @@ jobs:
       - name: Ruff snapshot collector check
         run: python -m ruff check scripts/download_quotes_tencent.py
 
+      - name: Ruff TDX xdxr collector check
+        run: python -m ruff check scripts/sync_tdx_xdxr.py
+
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py
 

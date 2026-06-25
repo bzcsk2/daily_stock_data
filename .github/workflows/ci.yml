@@ -66,6 +66,9 @@ jobs:
           scripts/sync_tdx_tick_trades.py
           scripts/export_tdx_f10_txts.py
 
+      - name: Ruff TDX F10 sections check
+        run: python -m ruff check scripts/sync_tdx_f10_sections.py
+
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py
 

@@ -265,7 +265,7 @@ def get_sync_ranges(symbol: SymbolInfo, trade_dates: list[dt.date], repair_days:
     if last_date is None:
         return [(trade_dates[0], trade_dates[-1])]
 
-    recent_dates = trade_dates[max(0, len(trade_dates) - repair_days) :]
+    recent_dates = trade_dates[max(0, len(trade_dates) - repair_days):]
     missing_recent = set(recent_dates) - get_existing_dates(symbol, recent_dates[0], recent_dates[-1])
 
     pending = [date for date in trade_dates if date > last_date]

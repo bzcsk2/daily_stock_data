@@ -48,6 +48,9 @@ jobs:
           scripts/sync_tushare_stock_basic.py
           scripts/sync_tickflow_instruments.py
 
+      - name: Ruff snapshot collector check
+        run: python -m ruff check scripts/download_quotes_tencent.py
+
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py
 

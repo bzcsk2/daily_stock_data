@@ -4,16 +4,15 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 import time
 import traceback
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import easyquotation
 import pandas as pd
 import pytz
 from psycopg2.extras import execute_values
-
 from snapshot_unified_common import UNIFIED_TABLE, create_partition, ensure_unified_schema, get_conn
 from storage_common import append_upsert_csv, use_csv, use_postgres, write_csv_table
 

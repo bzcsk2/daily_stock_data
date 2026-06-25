@@ -9,8 +9,8 @@ import json
 from pathlib import Path
 
 from kline_common import fetch_trade_dates, setup_logging
-from tdx_common import load_tdx_stock_universe
 from sync_tdx_tick_trades import PAGE_SIZE_DEFAULT, SESSION_PM, parse_trade_date, run_sync
+from tdx_common import load_tdx_stock_universe
 
 LOGGER = setup_logging("./logs/tdx_tick_trades_backfill.log")
 DEFAULT_PROGRESS_FILE = "./logs/tdx_tick_trades_backfill_progress.json"
@@ -94,7 +94,7 @@ def main() -> None:
     if args.offset:
         universe = universe[args.offset:]
     if args.limit is not None:
-        universe = universe[: args.limit]
+        universe = universe[:args.limit]
 
     processed_trade_days = 0
     processed_months = 0
@@ -146,13 +146,13 @@ def main() -> None:
             completed_for_month.add(trade_date_key)
             progress["completed_trade_dates"][month_key] = sorted(completed_for_month)
             progress["last_completed_trade_date"] = trade_date_key
-            progress["updated_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
+            progress["updated_at"] = dt.datetime.now(dt.UTC).isoformat()
             save_progress(progress_path, progress)
             processed_trade_days += 1
             LOGGER.info("✅ 完成 %s stats=%s", trade_date_key, stats)
 
         progress["completed_months"] = sorted(set(progress["completed_months"]) | {month_key}, reverse=True)
-        progress["updated_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
+        progress["updated_at"] = dt.datetime.now(dt.UTC).isoformat()
         save_progress(progress_path, progress)
         processed_months += 1
         LOGGER.info("✅ 月份 %s 回填完成", month_key)

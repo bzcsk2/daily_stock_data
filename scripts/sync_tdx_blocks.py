@@ -10,9 +10,8 @@ import json
 
 import pandas as pd
 import psycopg2
-from psycopg2.extras import execute_values
-
 from kline_common import DEFAULT_DB_CONFIG, setup_logging
+from psycopg2.extras import execute_values
 from storage_common import append_upsert_csv, read_csv_table, use_csv, use_postgres
 from tdx_common import code_to_symbol_guess, connect_hq_api
 
@@ -292,7 +291,7 @@ def save_memberships(snapshot_id: int, rows: list[tuple]) -> int:
 def main() -> None:
     args = parse_args()
     ensure_schema()
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+    fetched_at = dt.datetime.now(dt.UTC)
 
     LOGGER.info("🚀 开始同步 pytdx blocks: %s", ", ".join(args.block_files))
     with connect_hq_api(LOGGER) as api:

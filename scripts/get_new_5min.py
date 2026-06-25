@@ -11,9 +11,6 @@ from contextlib import suppress
 
 import baostock as bs
 import pandas as pd
-from psycopg2.extras import execute_values
-from psycopg2.pool import ThreadedConnectionPool
-
 from kline_common import (
     DEFAULT_DB_CONFIG,
     SymbolInfo,
@@ -23,6 +20,8 @@ from kline_common import (
     setup_logging,
     split_date_ranges,
 )
+from psycopg2.extras import execute_values
+from psycopg2.pool import ThreadedConnectionPool
 from storage_common import read_csv_table, replace_csv_slice, use_csv, use_postgres
 
 LOGGER = setup_logging("./logs/get_new_5min.log")

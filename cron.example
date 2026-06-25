@@ -1,5 +1,7 @@
 # 将 PROJECT_DIR 改成你的仓库路径后再安装到 crontab。
 # Edit PROJECT_DIR to your checkout path before installing with crontab.
+SHELL=/bin/bash
+CRON_TZ=Asia/Shanghai
 PROJECT_DIR=/path/to/daily_stock_data
 
 0 18 * * 1-5 /usr/bin/flock -n /tmp/daily-stock-data-daily.lock /bin/bash -lc 'cd "$PROJECT_DIR" && ./bin/run_daily_sync_batches.sh >> ./logs/cron_daily_kline.log 2>&1'

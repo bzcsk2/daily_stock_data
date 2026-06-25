@@ -1,8 +1,10 @@
-baostock
-easyquotation
-pandas
-psycopg2-binary
-pytdx
-pytz
-requests
-tushare
+# Runtime dependencies.
+# Keep broad but bounded ranges so provider/client behavior is less likely to drift silently.
+baostock>=0.8,<1
+easyquotation>=0.7,<1
+pandas>=2.1,<3
+psycopg2-binary>=2.9,<3
+pytdx>=1.72,<2
+pytz>=2024.1
+requests>=2.31,<3
+tushare>=1.4,<2

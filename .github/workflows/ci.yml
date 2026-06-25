@@ -60,6 +60,12 @@ jobs:
       - name: Ruff TDX blocks collector check
         run: python -m ruff check scripts/sync_tdx_blocks.py
 
+      - name: Ruff TDX tick and F10 export check
+        run: >-
+          python -m ruff check
+          scripts/sync_tdx_tick_trades.py
+          scripts/export_tdx_f10_txts.py
+
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py
 

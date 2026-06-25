@@ -8,9 +8,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from kline_common import setup_logging
+from storage_common import data_dir
 from tdx_common import TdxSymbol
 from tdx_f10_common import connect_hq_api, ensure_export_dir, fetch_full_document, load_tdx_stock_universe
-from storage_common import data_dir
 
 LOGGER = setup_logging("./logs/tdx_f10_export.log")
 DEFAULT_EXPORT_DIR = str(data_dir() / "finance")
@@ -27,7 +27,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def chunked(items: list[TdxSymbol], size: int) -> list[list[TdxSymbol]]:
-    return [items[idx : idx + size] for idx in range(0, len(items), size)]
+    return [items[idx: idx + size] for idx in range(0, len(items), size)]
 
 
 def export_chunk(symbols: list[TdxSymbol], output_dir: Path) -> tuple[int, list[str]]:
@@ -60,9 +60,9 @@ def main() -> None:
     output_dir = ensure_export_dir(args.output_dir)
     symbols = load_tdx_stock_universe(LOGGER)
     if args.offset:
-        symbols = symbols[args.offset :]
+        symbols = symbols[args.offset:]
     if args.limit is not None:
-        symbols = symbols[: args.limit]
+        symbols = symbols[:args.limit]
     total_written = 0
     exported_names: set[str] = set()
 

@@ -5,13 +5,12 @@ from __future__ import annotations
 
 import logging
 import os
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from dataclasses import dataclass
 
+from kline_common import latest_trade_date, load_symbols
 from pytdx.hq import TdxHq_API
 from pytdx.params import TDXParams
-
-from kline_common import latest_trade_date, load_symbols
 
 DEFAULT_HOST_CANDIDATES: list[tuple[str, int, str]] = [
     ("180.153.18.170", 7709, "上海电信主站Z1"),
@@ -105,27 +104,21 @@ def connect_hq_api(logger: logging.Logger, *, heartbeat: bool = True, timeout: i
         except Exception as exc:  # noqa: BLE001
             last_error = exc
             logger.warning("⚠ 连接 pytdx 主机失败 %s (%s:%s): %s", alias, ip, port, exc)
-            try:
+            with suppress(Exception):
                 api.disconnect()
-            except Exception:
-                pass
             continue
 
         if not ok:
-            try:
+            with suppress(Exception):
                 api.disconnect()
-            except Exception:
-                pass
             continue
 
         logger.info("✅ 已连接 pytdx 主机 %s (%s:%s)", alias, ip, port)
         try:
             yield api
         finally:
-            try:
+            with suppress(Exception):
                 api.disconnect()
-            except Exception:
-                pass
         return
 
     if last_error is not None:

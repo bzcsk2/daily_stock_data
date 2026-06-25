@@ -120,6 +120,7 @@ STORAGE_BACKEND=both
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ruff check . --select E9,F63,F7,F82
+ruff check scripts/storage_common.py scripts/tdx_common.py
 python -m py_compile scripts/*.py
 pytest
 for script in bin/run_*.sh; do bash -n "$script"; done

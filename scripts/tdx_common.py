@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from contextlib import contextmanager
 from dataclasses import dataclass
 
@@ -12,13 +13,40 @@ from pytdx.params import TDXParams
 
 from kline_common import latest_trade_date, load_symbols
 
-HOST_CANDIDATES: list[tuple[str, int, str]] = [
+DEFAULT_HOST_CANDIDATES: list[tuple[str, int, str]] = [
     ("180.153.18.170", 7709, "上海电信主站Z1"),
     ("180.153.18.171", 7709, "上海电信主站Z2"),
     ("202.108.253.130", 7709, "北京联通主站Z1"),
     ("202.108.253.131", 7709, "北京联通主站Z2"),
     ("123.125.108.14", 7709, "上证云北京联通一"),
 ]
+
+
+def _host_candidates_from_env() -> list[tuple[str, int, str]]:
+    raw_value = os.getenv("TDX_HOSTS", "").strip()
+    if not raw_value:
+        return DEFAULT_HOST_CANDIDATES
+
+    result: list[tuple[str, int, str]] = []
+    for raw_item in raw_value.split(","):
+        item = raw_item.strip()
+        if not item:
+            continue
+        parts = item.split(":", 2)
+        if len(parts) < 2:
+            continue
+        host = parts[0].strip()
+        try:
+            port = int(parts[1])
+        except ValueError:
+            continue
+        alias = parts[2].strip() if len(parts) == 3 and parts[2].strip() else host
+        result.append((host, port, alias))
+
+    return result or DEFAULT_HOST_CANDIDATES
+
+
+HOST_CANDIDATES = _host_candidates_from_env()
 
 
 @dataclass(frozen=True)

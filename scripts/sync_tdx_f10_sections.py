@@ -7,11 +7,10 @@ import argparse
 import datetime as dt
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-import psycopg2
 import pandas as pd
-from psycopg2.extras import execute_values
-
+import psycopg2
 from kline_common import DEFAULT_DB_CONFIG, setup_logging
+from psycopg2.extras import execute_values
 from storage_common import append_upsert_csv, use_csv, use_postgres
 from tdx_common import TdxSymbol
 from tdx_f10_common import (
@@ -81,7 +80,7 @@ def ensure_tables(section_names: list[str]) -> None:
 
 
 def chunked(items: list[TdxSymbol], size: int) -> list[list[TdxSymbol]]:
-    return [items[idx : idx + size] for idx in range(0, len(items), size)]
+    return [items[idx: idx + size] for idx in range(0, len(items), size)]
 
 
 def fetch_chunk(symbols: list[TdxSymbol], section_names: list[str], fetched_at: dt.datetime) -> dict[str, list[tuple]]:
@@ -168,10 +167,10 @@ def main() -> None:
 
     symbols = load_tdx_stock_universe(LOGGER)
     if args.offset:
-        symbols = symbols[args.offset :]
+        symbols = symbols[args.offset:]
     if args.limit is not None:
-        symbols = symbols[: args.limit]
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+        symbols = symbols[:args.limit]
+    fetched_at = dt.datetime.now(dt.UTC)
     totals = {section_table(name): 0 for name in section_names}
 
     LOGGER.info(

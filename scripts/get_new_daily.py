@@ -8,6 +8,7 @@ import datetime as dt
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import suppress
 
 import baostock as bs
 import pandas as pd
@@ -21,9 +22,9 @@ from kline_common import (
     SymbolInfo,
     baostock_to_ts_code,
     fetch_trade_dates,
+    latest_trade_date,
     load_env_file,
     load_symbols,
-    latest_trade_date,
     setup_logging,
 )
 from storage_common import append_upsert_csv, read_csv_table, use_csv, use_postgres
@@ -529,10 +530,8 @@ def process_symbol(symbol: SymbolInfo, trade_dates: list[dt.date], repair_days: 
                     last_error = None
                     break
                 finally:
-                    try:
+                    with suppress(Exception):
                         bs.logout()
-                    except Exception:
-                        pass
             except Exception as exc:
                 last_error = exc
                 LOGGER.warning(

@@ -121,6 +121,7 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ruff check . --select E9,F63,F7,F82
 ruff check scripts/storage_common.py scripts/tdx_common.py scripts/kline_common.py scripts/snapshot_unified_common.py scripts/tdx_f10_common.py
+ruff check scripts/get_new_daily.py scripts/get_new_5min.py
 python -m py_compile scripts/*.py
 pytest
 for script in bin/run_*.sh; do bash -n "$script"; done

@@ -14,7 +14,6 @@ from pathlib import Path
 import baostock as bs
 import baostock.common.contants as _bs_cons
 import psycopg2
-
 from storage_common import read_csv_table, use_postgres
 
 _bs_cons.BAOSTOCK_SERVER_IP = "public-api.baostock.com"

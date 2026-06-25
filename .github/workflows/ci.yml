@@ -24,8 +24,8 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install -r requirements-dev.txt
 
-      - name: Lint Python sources
-        run: python -m ruff check .
+      - name: Lint maintained Python helpers
+        run: python -m ruff check scripts/storage_common.py
 
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py

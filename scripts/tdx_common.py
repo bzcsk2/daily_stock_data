@@ -8,10 +8,9 @@ import os
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass
 
+from kline_common import latest_trade_date, load_symbols
 from pytdx.hq import TdxHq_API
 from pytdx.params import TDXParams
-
-from kline_common import latest_trade_date, load_symbols
 
 DEFAULT_HOST_CANDIDATES: list[tuple[str, int, str]] = [
     ("180.153.18.170", 7709, "上海电信主站Z1"),

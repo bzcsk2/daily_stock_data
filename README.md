@@ -124,6 +124,7 @@ ruff check scripts/storage_common.py scripts/tdx_common.py scripts/kline_common.
 ruff check scripts/get_new_daily.py scripts/get_new_5min.py
 ruff check scripts/sync_tushare_stock_basic.py scripts/sync_tickflow_instruments.py
 ruff check scripts/download_quotes_tencent.py
+ruff check scripts/sync_tdx_xdxr.py
 python -m py_compile scripts/*.py
 pytest
 for script in bin/run_*.sh; do bash -n "$script"; done

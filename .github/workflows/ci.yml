@@ -36,6 +36,12 @@ jobs:
           scripts/snapshot_unified_common.py
           scripts/tdx_f10_common.py
 
+      - name: Ruff K-line collector check
+        run: >-
+          python -m ruff check
+          scripts/get_new_daily.py
+          scripts/get_new_5min.py
+
       - name: Compile Python sources
         run: python -m py_compile scripts/*.py
 

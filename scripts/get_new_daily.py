@@ -8,24 +8,24 @@ import datetime as dt
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import suppress
 
 import baostock as bs
 import pandas as pd
 import requests
 import tushare as ts
-from psycopg2.extras import execute_values
-from psycopg2.pool import ThreadedConnectionPool
-
 from kline_common import (
     DEFAULT_DB_CONFIG,
     SymbolInfo,
     baostock_to_ts_code,
     fetch_trade_dates,
+    latest_trade_date,
     load_env_file,
     load_symbols,
-    latest_trade_date,
     setup_logging,
 )
+from psycopg2.extras import execute_values
+from psycopg2.pool import ThreadedConnectionPool
 from storage_common import append_upsert_csv, read_csv_table, use_csv, use_postgres
 
 LOGGER = setup_logging("./logs/get_new_daily.log")
@@ -264,7 +264,7 @@ def get_sync_ranges(symbol: SymbolInfo, trade_dates: list[dt.date], repair_days:
     if last_date is None:
         return [(trade_dates[0], trade_dates[-1])]
 
-    recent_dates = trade_dates[max(0, len(trade_dates) - repair_days) :]
+    recent_dates = trade_dates[max(0, len(trade_dates) - repair_days):]
     missing_recent = set(recent_dates) - get_existing_dates(symbol, recent_dates[0], recent_dates[-1])
 
     pending = [date for date in trade_dates if date > last_date]
@@ -529,10 +529,8 @@ def process_symbol(symbol: SymbolInfo, trade_dates: list[dt.date], repair_days: 
                     last_error = None
                     break
                 finally:
-                    try:
+                    with suppress(Exception):
                         bs.logout()
-                    except Exception:
-                        pass
             except Exception as exc:
                 last_error = exc
                 LOGGER.warning(

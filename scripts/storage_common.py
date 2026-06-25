@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 import pandas as pd
 
@@ -24,7 +24,7 @@ def load_project_env(path: str | None = None) -> None:
         if not line or line.startswith("#"):
             continue
         if line.startswith("export "):
-            line = line[len("export ") :]
+            line = line[len("export "):]
         if "=" not in line:
             continue
         key, value = line.split("=", 1)
@@ -56,7 +56,7 @@ def use_postgres() -> bool:
 
 
 def data_dir() -> Path:
-    path = Path(os.getenv("DATA_DIR", PROJECT_DIR / "data"))
+    path = Path(os.getenv("DATA_DIR", str(PROJECT_DIR / "data")))
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -77,7 +77,13 @@ def write_csv_table(df: pd.DataFrame, table: str) -> int:
     if df.empty:
         return 0
     path = csv_path(table)
-    df.to_csv(path, index=False)
+    temp_path = path.with_name(f".{path.name}.tmp.{os.getpid()}")
+    try:
+        df.to_csv(temp_path, index=False)
+        os.replace(temp_path, path)
+    finally:
+        if temp_path.exists():
+            temp_path.unlink()
     return len(df)
 
 

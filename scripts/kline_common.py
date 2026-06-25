@@ -11,9 +11,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import baostock as bs
-import baostock.common.contants as _bs_cons
-_bs_cons.BAOSTOCK_SERVER_IP = "public-api.baostock.com"
 import psycopg2
+import baostock.common.contants as _bs_cons
+
+_bs_cons.BAOSTOCK_SERVER_IP = "public-api.baostock.com"
 
 from storage_common import read_csv_table, use_postgres
 

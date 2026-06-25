@@ -11,9 +11,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import pandas as pd
 import psycopg2
-from psycopg2.extras import Json, execute_values
-
 from kline_common import DEFAULT_DB_CONFIG, setup_logging
+from psycopg2.extras import Json, execute_values
 from storage_common import read_csv_table, use_csv, use_postgres, write_csv_table
 from tdx_common import TdxSymbol, connect_hq_api, load_tdx_stock_universe
 
@@ -122,7 +121,7 @@ def ensure_schema(trade_date: dt.date) -> None:
 
 
 def chunked(items: list[TdxSymbol], size: int) -> list[list[TdxSymbol]]:
-    return [items[idx : idx + size] for idx in range(0, len(items), size)]
+    return [items[idx: idx + size] for idx in range(0, len(items), size)]
 
 
 def classify_session(trade_time: dt.time) -> str | None:
@@ -370,7 +369,7 @@ def run_sync(
     if limit is not None:
         effective_symbols = effective_symbols[:limit]
 
-    fetched_at = dt.datetime.now(dt.timezone.utc)
+    fetched_at = dt.datetime.now(dt.UTC)
     total_rows = 0
     total_symbols = 0
     total_deleted = 0
